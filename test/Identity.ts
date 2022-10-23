@@ -123,6 +123,15 @@ describe("Identity", function () {
 
 
     });
+    it("Should return a token uri", async function () {
+      const {identity, owner, otherAccount} = await loadFixture(deployIdentityFixture);
+      const tx = await identity.create(owner.address, hash2, hash, {from:owner.address});
+      await tx.wait();
+      const id = await identity.getID(owner.address);
+      const uri = await identity.tokenURI(id);
+      console.log(uri)
+
+    });
   })
 
     describe("Events", function () {

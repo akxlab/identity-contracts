@@ -4,12 +4,13 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "../interfaces/INftIdentity.sol";
-import "../Strings.sol";
+
 
 contract Identity is INftIdentity, ERC1155, Ownable {
 
-	using Strings for string;
+	using Strings for uint256;
 	using Counters for Counters.Counter;
 
 	enum IdentityTypes {
@@ -48,8 +49,23 @@ contract Identity is INftIdentity, ERC1155, Ownable {
 		setBaseMetadataURI(uri_);
 	}
 
-	function tokenURI(bytes32 ID) public view override returns(string memory) {
-		return Strings.strConcat(string(abi.encode(ID)),Strings.uint2str(_Id_to_tokenId[ID]));
+	function tokenURI(bytes32 ID) public view  returns(string memory) {
+		string memory idStr =uint256(ID).toString();
+		string memory tid = _Id_to_tokenId[ID].toString();
+
+		return string.concat(baseMetadataURI, idStr, tid);
+	}
+
+	function bytes32ToString(bytes32 _bytes32) public pure returns (string memory) {
+		uint8 i = 0;
+		while(i < 32 && _bytes32[i] != 0) {
+			i++;
+		}
+		bytes memory bytesArray = new bytes(i);
+		for (i = 0; i < 32 && _bytes32[i] != 0; i++) {
+			bytesArray[i] = _bytes32[i];
+		}
+		return string(bytesArray);
 	}
 
 	function uri(uint256 tokenId) public view override returns(string memory) {
