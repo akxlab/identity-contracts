@@ -101,7 +101,7 @@ contract Identity is INftIdentity, ERC1155, Ownable {
 	}
 
 	function useIdentity(address _owner, bytes32 pwdHash) public view returns(bytes32) {
-		if(_hasIdentity[msg.sender] != true) {
+		if(_hasIdentity[_owner] != true) {
 			revert("invalid identity request");
 		}
 
@@ -174,23 +174,23 @@ contract Identity is INftIdentity, ERC1155, Ownable {
 		success = true;
 	}
 
-	function setUsername(address _owner, string memory _username) public returns (string memory __username, bool success) {
-		require(_owner != address(0), "no zero address");
-		require(!_hasUsername[_owner], "already have a username");
-		require(!_usernameExists[_username], "username already exists");
+	function setUsername(address _owner, string memory _username) public returns (string memory) {
+		
+		//require(!_hasUsername[_owner], "already have a username");
+		//require(!_usernameExists[_username], "username already exists");
 		_hasUsername[_owner] = true;
 		_usernameExists[_username] = true;
 		_usernameToTokenId[_username] = _addressToTokenId[_owner];
 		_addressToUsername[_owner] = _username;
-		__username = _username;
-		success = true;
+		
+		return _username;
 	}
 
-	function getUsername(address _owner) public view returns(string memory _username, bool success) {
+	function getUsername(address _owner) public view returns(string memory _username) {
 		require(_owner != address(0), "no zero address");
 		require(_hasUsername[_owner], "do not have a username");
 		_username = _addressToUsername[_owner];
-		success = true;
+		
 	}
 
 	function getUsername(uint256 tokenId) public view returns(string memory _username, bool success){

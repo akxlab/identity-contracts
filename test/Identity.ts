@@ -132,6 +132,28 @@ describe("Identity", function () {
       console.log(uri)
 
     });
+  });
+
+  describe("Authentication", function() {
+    it("Should validate and authenticate the account", async function () {
+      const {identity, owner, otherAccount} = await loadFixture(deployIdentityFixture);
+
+     const tx = await identity.create(owner.address, hash2, hash, {from: owner.address});
+     await tx.wait();
+
+     const ID = await identity.useIdentity(owner.address,hash2);
+     expect(ID).to.be.equal(id1);
+
+    });
+    it("Should NOT validate and authenticate the account", async function () {
+      const {identity, owner, otherAccount} = await loadFixture(deployIdentityFixture);
+
+      const tx = await identity.create(owner.address, hash, hash, {from: owner.address});
+      await tx.wait();
+
+      await expect(identity.useIdentity(owner.address,hash2)).to.be.reverted;
+
+    });
   })
 
     describe("Events", function () {

@@ -11,3 +11,5 @@ artifacts
 .idea
 deployments
 .history
+contracts/.DS_Store
+.DS_Store
